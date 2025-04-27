@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Fraud Detection - SBI Life Insurance</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        /* Header Styling - Kept exactly as in the image */
+        .header {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 15px 40px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-right: auto; /* Push everything else to the right */
+        }
+        
+        .logo {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .brand-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            margin-right: 30px; /* Space between nav and sign-in button */
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #4a54f1;
+        }
+        
+        .sign-in-btn {
+            background-color: #4a54f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        /* Main Background */
+        body {
+            background-color: #00004d;
+        }
+        
+        /* Container for main content */
+        .container {
+            padding: 30px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Bulk Upload Section */
+        .bulk-upload-section {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            margin-top: 40px;
+        }
+        
+        .bulk-upload-section h2 {
+            color: #00004d;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .file-input-container {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .file-input-container:hover {
+            border-color: #4a54f1;
+        }
+        
+        .file-input-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .file-input {
+            width: 100%;
+            padding: 10px;
+            color: #333;
+        }
+        
+        .upload-btn {
+            background-color: #4a54f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .upload-btn:hover {
+            background-color: #3a43d0;
+        }
+        
+        .download-btn {
+            background-color: #00004d;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background-color: #00003d;
+        }
+        
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            color: #333;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+            top: 100%;
+            left: 0;
+        }
+        
+        .dropdown-content a {
+            padding: 12px 16px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+        }
+        
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        /* Modal Styles - New Addition */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #4a54f1;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .modal-message {
+            margin: 15px 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .modal-btn {
+            background-color: #4a54f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .success-icon {
+            color: #28a745;
+            font-size: 50px;
+            margin: 15px 0;
+        }
+        
+        .error-icon {
+            color: #dc3545;
+            font-size: 50px;
+            margin: 15px 0;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <!-- Header - Kept exactly as in the image -->
+    <header class="header">
+        <div class="logo-container">
+            <img src="sbi_logo.png" alt="SBI Logo" class="logo">
+            <span class="brand-text">Life Insurance</span>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="documentation.html">Documentation</a>
+            <div class="dropdown">
+                <a href="#" style="font-weight: bold; color: #4a54f1;">Detection</a>
+                <div class="dropdown-content">
+                    <a href="manualEntry.html">Manual Data Entry</a>
+                    <a href="#">Bulk Upload</a>
+                    <a href="signAuth.html">E-Sign Auth</a>
+                </div>
+            </div>
+            <a href="#">Analysis</a>
+        </nav>
+        
+        <button class="sign-in-btn">Sign In</button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="bulk-upload-section">
+            <h2>Bulk Upload</h2>
+            <div class="upload-form">
+                <div class="file-input-container">
+                    <label class="file-input-label">Select or drag CSV, XLS, or XLSX file</label>
+                    <input type="file" id="bulkUpload" class="file-input" accept=".csv, .xls, .xlsx" />
+                </div>
+                
+                <button class="upload-btn" id="bulkUploadBtn">Upload and Process File</button>
+                
+                <div id="uploadStatus" class="status-message" style="display: none;"></div>
+                
+                <a id="downloadLink" class="download-btn" style="display: none;" download>⬇️ Download Processed File</a>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Processing Modal - New Addition -->
+    <div id="processingModal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="modalSpinner" class="spinner"></div>
+            <div id="modalIcon" style="display: none;"></div>
+            <div id="modalMessage" class="modal-message">Uploading and processing file...</div>
+            <button id="modalCloseBtn" class="modal-btn">Close</button>
+            <a id="modalDownloadBtn" class="download-btn" style="display: none;" download>⬇️ Download Processed File</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("bulkUploadBtn").addEventListener("click", uploadBulkFile);
+        document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+
+        // Function to show the modal
+        function showModal(message) {
+            document.getElementById("modalMessage").innerText = message;
+            document.getElementById("modalSpinner").style.display = "block";
+            document.getElementById("modalIcon").style.display = "none";
+            document.getElementById("modalCloseBtn").style.display = "none";
+            document.getElementById("modalDownloadBtn").style.display = "none";
+            document.getElementById("processingModal").style.display = "flex";
+        }
+
+        // Function to update modal with success
+        function showSuccessModal(message) {
+            document.getElementById("modalMessage").innerText = message;
+            document.getElementById("modalSpinner").style.display = "none";
+            document.getElementById("modalIcon").innerHTML = "✅";
+            document.getElementById("modalIcon").className = "success-icon";
+            document.getElementById("modalIcon").style.display = "block";
+            document.getElementById("modalCloseBtn").style.display = "inline-block";
+            document.getElementById("modalDownloadBtn").style.display = "inline-block";
+        }
+
+        // Function to update modal with error
+        function showErrorModal(message) {
+            document.getElementById("modalMessage").innerText = message;
+            document.getElementById("modalSpinner").style.display = "none";
+            document.getElementById("modalIcon").innerHTML = "❌";
+            document.getElementById("modalIcon").className = "error-icon";
+            document.getElementById("modalIcon").style.display = "block";
+            document.getElementById("modalCloseBtn").style.display = "inline-block";
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById("processingModal").style.display = "none";
+        }
+
+        // Function to Handle Bulk File Upload
+        async function uploadBulkFile() {
+            const fileInput = document.getElementById("bulkUpload");
+            const file = fileInput.files[0];
+            const uploadStatus = document.getElementById("uploadStatus");
+            const downloadLink = document.getElementById("downloadLink");
+
+            if (!file) {
+                showErrorModal("Please select a file.");
+                return;
+            }
+
+            const allowedExtensions = ["csv", "xls", "xlsx"];
+            const fileExtension = file.name.split(".").pop().toLowerCase();
+
+            if (!allowedExtensions.includes(fileExtension)) {
+                showErrorModal("Invalid file type. Upload CSV/XLS/XLSX.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                showModal("Uploading and processing file...");
+                document.getElementById("bulkUploadBtn").disabled = true;
+
+                const uploadResponse = await fetch("https://frauddetection-production-fcb7.up.railway.app/model/predict_file/", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error(`Upload failed: ${await uploadResponse.text()}`);
+                }
+
+                const downloadResponse = await fetch("https://frauddetection-production-fcb7.up.railway.app/model/download_file/", {
+                    method: "GET",
+                });
+
+                if (!downloadResponse.ok) {
+                    throw new Error(`Download failed: ${await downloadResponse.text()}`);
+                }
+
+                const contentType = downloadResponse.headers.get("Content-Type");
+                console.log("📦 File content type:", contentType);
+
+                const blob = await downloadResponse.blob();
+                const url = window.URL.createObjectURL(blob);
+
+                // Set download link for both the main page and modal
+                downloadLink.href = url;
+                document.getElementById("modalDownloadBtn").href = url;
+
+                if (contentType.includes("csv") || contentType.includes("text/plain")) {
+                    downloadLink.download = "Processed_File.csv";
+                    document.getElementById("modalDownloadBtn").download = "Processed_File.csv";
+                } else {
+                    downloadLink.download = "Processed_File.xlsx";
+                    document.getElementById("modalDownloadBtn").download = "Processed_File.xlsx";
+                }
+
+                downloadLink.style.display = "block";
+                showSuccessModal("File processed successfully! Click below to download.");
+                
+                // Also update the main page status
+                uploadStatus.innerText = "✅ File processed successfully! Click below to download.";
+                uploadStatus.style.backgroundColor = "#e0ffe0";
+                uploadStatus.style.display = "block";
+            } catch (error) {
+                showErrorModal("Operation failed: " + error.message);
+                
+                // Also update the main page status
+                uploadStatus.innerText = "❌ Operation failed: " + error.message;
+                uploadStatus.style.backgroundColor = "#ffe0e0";
+                uploadStatus.style.display = "block";
+                downloadLink.style.display = "none";
+            } finally {
+                document.getElementById("bulkUploadBtn").disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

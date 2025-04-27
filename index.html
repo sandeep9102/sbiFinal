@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SBI Fraud Detection</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- AOS Animation Library CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  
+  
+    <style>
+      .trusted-by {
+        padding: 60px 0;
+        background-color: #f5f7ff;
+        text-align: center;
+      }
+      
+      .trusted-by h2 {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 40px;
+        color: #333;
+      }
+      
+      .client-logos {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 25px;
+      }
+      
+      .client-logo {
+        width: 160px;
+        height: 90px;
+        background-color: #f0efea;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        padding: 10px;
+      }
+      
+      .industry-label {
+        font-weight: 600;
+        color: #555;
+        font-size: 14px;
+        margin-top: 8px;
+      }
+      
+      .client-logo:hover {
+        background-color: #e6e5e0;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+      
+      .future-vision {
+        margin-top: 30px;
+        font-size: 18px;
+        color: #666;
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .client-logos {
+          gap: 15px;
+        }
+        
+        .client-logo {
+          width: 130px;
+          height: 75px;
+        }
+        
+        .industry-label {
+          font-size: 12px;
+        }
+      }
+    
+      /* Sign-in Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .modal-content {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        width: 400px;
+        max-width: 90%;
+        position: relative;
+        animation: modalFadeIn 0.3s;
+      }
+      
+      @keyframes modalFadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        position: relative;
+      }
+      
+      .modal-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 24px;
+        text-align: center;
+      }
+      
+      .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: #777;
+      }
+      
+      .close-btn:hover {
+        color: #333;
+      }
+      
+      .modal-body {
+        padding: 20px;
+      }
+      
+      .form-group {
+        margin-bottom: 20px;
+      }
+      
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+      }
+      
+      .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+      
+      .form-control:focus {
+        border-color: #2196F3;
+        outline: none;
+      }
+      
+      .submit-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      
+      .submit-btn:hover {
+        background-color: #0d8bf2;
+      }
+      
+      .form-footer {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+      }
+      
+      .form-footer a {
+        color: #2196F3;
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      
+      .form-footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+</head>
+
+<body>
+  
+<!-- jQuery and Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<!-- Navbar -->
+<header class="navbar">
+  <div class="container nav-container">
+    <div class="logo">
+      <img src="sbi_logo.png" alt="SBI Logo">
+      <span>Life Insurance</span>
+    </div>
+    <div class="nav-items">
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="documentation.html">Documentation</a></li>
+        <div class="dropdown">
+          <a id="dropdownBtn" class="dropdown-toggle">Detection</a>
+          <ul class="dropdown-menu" id="dropdownMenu">
+            <li><a href="manualEntry.html">Manual Data Entry</a></li>
+            <li><a href="bulkUpload.html">Bulk Upload</a></li>
+            <li><a href="signAuth.html">E-SignAuth</a></li>
+          </ul>
+        </div>
+        <li><a href="#">Analysis</a></li>
+      </ul>
+      <button class="signin-btn" id="signInBtn">Log In</button>
+      <style>
+        .signin-btn {
+          background-color: #2e7dff ;
+          color: #fff;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 6px;
+          text-decoration: none;
+          font-size: 16px;
+          cursor: pointer;
+        }
+        .signin-btn:hover {
+          background-color: #1b5e20;
+        }
+        
+      </style>
+    </div>
+  </div>
+</header>
+
+<!-- Sign-in Modal -->
+<div class="modal" id="signInModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalTitle">Log In</h2>
+      <button class="close-btn" id="closeModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <!-- Login Form -->
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-control" required>
+        </div>
+        <button type="submit" class="submit-btn">Log In</button>
+        <div class="form-footer">
+          <p>Don't have an account? <a id="showRegister">Register here</a></p>
+        </div>
+      </form>
+      
+      <!-- Registration Form -->
+      <form id="registerForm" style="display: none;">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Email</label>
+          <input type="email" id="regEmail" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password</label>
+          <input type="password" id="regPassword" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" class="form-control" required>
+        </div>
+        <button type="submit" class="submit-btn">Register</button>
+        <div class="form-footer">
+          <p>Already have an account? <a id="showLogin">Log In</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Hero Section -->
+<section class="hero" data-aos="fade-up" data-aos-duration="1000">
+  <div class="container hero-container">
+    <div class="hero-text">
+      <h1>Advanced Fraud Detection</h1>
+      <p>Protect your business with our AI-powered fraud detection system. Identify suspicious activities in real-time and prevent financial losses before they happen.</p>
+      <div class="hero-buttons">
+        <button class="get-started">Get Started</button>
+        <button class="watch-demo">Watch Demo</button>
+      </div>
+    </div>
+    <div class="hero-image" data-aos="zoom-in" data-aos-delay="200">
+      <img src="vis.webp" alt="Fraud Detection Dashboard">
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <h2>Powerful Fraud Protection Features</h2>
+      <p>Our comprehensive suite of tools helps you identify, analyze, and prevent fraudulent activities.</p>
+    </div>
+    <div class="feature-cards">
+      <div class="feature-card" data-aos="fade-right" data-aos-delay="100">
+        <div class="feature-icon">
+          <img src="realtime.png" alt="Real-time Detection">
+        </div>
+        <h3>Real-time Detection</h3>
+        <p>Our system analyzes transactions in real-time to identify suspicious activities before they cause damage.</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-icon">
+          <img src="analytics.png" alt="Advanced Analytics">
+        </div>
+        <h3>Advanced Analytics</h3>
+        <p>Gain insights into fraud patterns with comprehensive data visualization and analytics tools.</p>
+      </div>
+      <div class="feature-card" data-aos="fade-left" data-aos-delay="300">
+        <div class="feature-icon">
+          <img src="anomalydetection.png" alt="Anomaly Detection">
+        </div>
+        <h3>Anomaly Detection</h3>
+        <p>Machine learning algorithms identify unusual patterns that may indicate fraudulent behavior.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Additional Features Section -->
+<section class="additional-features">
+  <div class="container">
+    <div class="feature-cards">
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-icon">
+          <img src="riskscore.png" alt="Risk Scoring">
+        </div>
+        <h3>Risk Scoring</h3>
+        <p>Every transaction is assigned a risk score based on multiple factors for quick assessment.</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-icon">
+          <img src="userbehaviour.png" alt="User Behavior Analysis">
+        </div>
+        <h3>User Behavior Analysis</h3>
+        <p>Track and analyze user behaviors to detect suspicious changes in patterns.</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-icon">
+          <img src="continuousmonitoring.png" alt="Continuous Monitoring">
+        </div>
+        <h3>Continuous Monitoring</h3>
+        <p>24/7 monitoring ensures your business is protected at all times from emerging threats.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Results Section -->
+<section class="results">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <h2>Proven Results</h2>
+      <p>Our fraud detection system has helped businesses around the world protect their assets and customers.</p>
+    </div>
+    <div class="stats-panel">
+      <div class="stat-item" data-aos="zoom-in" data-aos-delay="100">
+        <h3>99.7%</h3>
+        <p>Detection Rate</p>
+      </div>
+      <div class="stat-item" data-aos="zoom-in" data-aos-delay="200">
+        <h3>$1.2B</h3>
+        <p>Saved for Clients</p>
+      </div>
+      <div class="stat-item" data-aos="zoom-in" data-aos-delay="300">
+        <h3>0.002%</h3>
+        <p>False Positive Rate</p>
+      </div>
+      <div class="stat-item" data-aos="zoom-in" data-aos-delay="400">
+        <h3>24/7</h3>
+        <p>Continuous Protection</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trusted By Section -->
+<section class="trusted-by">
+  <div class="container">
+    <h2>Trusted Across Insurance Sectors</h2>
+    <div class="client-logos">
+      <div class="client-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 4v16M8 4v16M12 4v16M4 4h16"></path>
+          <path d="M4 4v16h16V4H4z"></path>
+        </svg>
+        <span class="industry-label">Life Insurance</span>
+      </div>
+      <div class="client-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"></path>
+          <path d="M12 11.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path>
+          <path d="M12 11.5V19"></path>
+          <line x1="9" y1="17" x2="15" y2="17"></line>
+        </svg>
+        <span class="industry-label">Pension Plans</span>
+      </div>
+      <div class="client-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7h6V5a3 3 0 0 0-3-3z"></path>
+          <path d="M19 9h2a2 2 0 0 1 0 4h-2"></path>
+          <path d="M5 9H3a2 2 0 0 0 0 4h2"></path>
+          <path d="M12 19a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+        </svg>
+        <span class="industry-label">Health Plans</span>
+      </div>
+      <div class="client-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+        </svg>
+        <span class="industry-label">Unit Linked</span>
+      </div>
+      <div class="client-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        <span class="industry-label">Group Insurance</span>
+      </div>
+      <div class="client-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path>
+          <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"></path>
+          <path d="M12 3v6"></path>
+        </svg>
+        <span class="industry-label">Term Plans</span>
+      </div>
+    </div>
+    <p class="future-vision">Protecting SBI Life Insurance customers across all product lines</p>
+  </div>
+</section>
+
+<style>
+  .trusted-by {
+    padding: 60px 0;
+    background-color: #f5f7ff;
+    text-align: center;
+  }
+
+  .trusted-by h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #333;
+  }
+
+  .client-logos {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+  }
+
+  .client-logo {
+    width: 160px;
+    height: 90px;
+    background-color: #f0efea;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 10px;
+  }
+
+  .industry-label {
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+    margin-top: 8px;
+    word-wrap: break-word; /* This will wrap the text if needed */
+    text-align: center;    /* This aligns text in the center */
+  }
+
+  .client-logo:hover {
+    background-color: #e6e5e0;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .future-vision {
+    margin-top: 30px;
+    font-size: 18px;
+    color: #666;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .client-logos {
+      gap: 15px;
+    }
+
+    .client-logo {
+      width: 130px;
+      height: 75px;
+    }
+
+    .industry-label {
+      font-size: 12px;
+    }
+  }
+</style>
+
+
+<!-- CTA Section -->
+<section class="cta" data-aos="fade-up">
+  <div class="container">
+    <div class="cta-content">
+      <h2>Ready to stop fraud?</h2>
+      <h3>Get started with SBI Fraud Detection and Prevention today.</h3>
+    </div>
+    <div class="cta-buttons">
+      <button class="demo-btn">Let's get started</button>
+      <button class="learn-more-btn">Learn more →</button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer Section -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-item">
+        <h4>About</h4>
+        <ul>
+          <li><a href="#">Company Info</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-item">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="#">Email Us</a></li>
+          <li><a href="#">Support</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-item">
+        <h4>Follow Us</h4>
+        <ul class="social-links">
+          <li><a href="#"><i class="fab fa-facebook-f"></i> Facebook</a></li>
+          <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+          <li><a href="#"><i class="fab fa-linkedin-in"></i> LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; Made by Team The Quads</p>
+    </div>
+  </div>
+  <style>
+    .footer {
+      background-color: #333;
+      color: #fff;
+      padding: 40px 0;
+      font-size: 14px;
+    }
+  
+    .footer .footer-content {
+      display: flex;
+      justify-content: space-between;
+    }
+  
+    .footer .footer-item {
+      width: 30%;
+    }
+  
+    .footer .footer-item h4 {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+  
+    .footer .footer-item ul {
+      list-style: none;
+      padding: 0;
+    }
+  
+    .footer .footer-item ul li {
+      margin-bottom: 10px;
+    }
+  
+    .footer .footer-item ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+  
+    .footer .footer-item ul li a:hover {
+      color: #ffd700;
+    }
+  
+    .footer .footer-bottom {
+      text-align: center;
+      margin-top: 30px;
+    }
+  
+    .footer .footer-bottom p {
+      font-size: 16px;
+    }
+  
+    .social-links {
+      display: flex;
+      gap: 15px;
+    }
+  
+    .social-links li a {
+      color: #fff;
+      text-decoration: none;
+    }
+  
+    .social-links li a i {
+      margin-right: 8px;
+    }
+  
+    .social-links li a:hover {
+      color: #ffd700;
+    }
+  
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .client-logos {
+        gap: 15px;
+      }
+  
+      .client-logo {
+        width: 130px;
+        height: 75px;
+      }
+  
+      .industry-label {
+        font-size: 12px;
+      }
+  
+      .footer .footer-content {
+        flex-direction: column;
+        align-items: center;
+      }
+  
+      .footer .footer-item {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+  
+      .footer .footer-bottom {
+        font-size: 14px;
+      }
+    }
+  </style>
+</footer>
+
+<!-- AOS Animation Script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+  AOS.init({
+    once: true, // Animation happens only once
+    duration: 1000, // Animation duration
+  });
+  
+  // Sign-in Modal JavaScript
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get modal elements
+    const modal = document.getElementById('signInModal');
+    const signInBtn = document.getElementById('signInBtn');
+    const closeBtn = document.getElementById('closeModal');
+    const showRegisterBtn = document.getElementById('showRegister');
+    const showLoginBtn = document.getElementById('showLogin');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const modalTitle = document.getElementById('modalTitle');
+    
+    // Open modal
+    signInBtn.addEventListener('click', function() {
+      modal.style.display = 'flex';
+    });
+    
+    // Close modal
+    closeBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+    
+    // Close modal if clicked outside
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+    
+    // Switch to registration form
+    showRegisterBtn.addEventListener('click', function() {
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+      modalTitle.textContent = 'Register';
+    });
+    
+    // Switch to login form
+    showLoginBtn.addEventListener('click', function() {
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'block';
+      modalTitle.textContent = 'Sign In';
+    });
+    
+    // Handle login form submission
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      // Here you would typically send the login data to your server
+      console.log('Login attempt:', { email, password });
+      
+      // For demo purposes, just close the modal after "logging in"
+      alert('Login successful!');
+      modal.style.display = 'none';
+    });
+    
+    // Handle registration form submission
+    registerForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('regEmail').value;
+      const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      // Check if passwords match
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+      
+      // Here you would typically send the registration data to your server
+      console.log('Registration attempt:', { fullName, email, password });
+      
+      // For demo purposes, switch to login form after "registering"
+      alert('Registration successful! Please log in.');
+      showLoginBtn.click();
+    });
+  });
+</script>
+
+</body>
+</html>

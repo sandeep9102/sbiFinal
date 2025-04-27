@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Data Entry - SBI Life Insurance</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        /* Header Styling */
+        .header {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 15px 40px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-right: auto; /* Push everything else to the right */
+        }
+        
+        .logo {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .brand-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            margin-right: 30px; /* Space between nav and sign-in button */
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #4a54f1;
+        }
+        
+        .sign-in-btn {
+            background-color: #4a54f1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #00004d;
+            color: white;
+            padding: 60px 40px;
+            min-height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Form Card */
+        .data-entry-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            max-width: 800px;
+            margin: 20px auto;
+            color: #333;
+        }
+        
+        .data-entry-card h2 {
+            color: #00004d;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        /* Form Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .full-width {
+            grid-column: span 2;
+        }
+        
+        /* Forms */
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #444;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #4a54f1;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background-color: #3a43d0;
+        }
+        
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Result Modal */
+        .result-modal {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        
+        .modal-overlay.active .result-modal {
+            transform: translateY(0);
+        }
+        
+        .result-modal h3 {
+            color: #00004d;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
+        .result-modal p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .modal-btn {
+            background-color: #4a54f1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(74, 84, 241, 0.3);
+            border-radius: 50%;
+            border-top-color: #4a54f1;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 20px auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Error Message */
+        .error-message {
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 4px solid #d32f2f;
+        }
+        
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+        }
+        
+        .dropdown-content a {
+            padding: 12px 16px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+        }
+        
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .full-width {
+                grid-column: span 1;
+            }
+            
+            .header {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .logo-container {
+                margin-bottom: 15px;
+                margin-right: 0;
+            }
+            
+            .nav-links {
+                margin-bottom: 15px;
+                margin-right: 0;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .result-modal {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <img src="sbi_logo.png" alt="SBI Logo" class="logo">
+            <span class="brand-text">Life Insurance</span>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="documentation.html">Documentation</a>
+            <div class="dropdown">
+                <a href="#" style="font-weight: bold; color: #4a54f1;">Detection</a>
+                <div class="dropdown-content">
+                    <a href="#" style="font-weight: bold;">Manual Data Entry</a>
+                    <a href="bulkUpload.html">Bulk Upload</a>
+                    <a href="signAuth.html">E-Sign Auth</a>
+                </div>
+            </div>
+            <a href="#">Analysis</a>
+        </nav>
+        
+        <button class="sign-in-btn">Sign In</button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="hero-section">
+        <div class="content-container">
+            <div class="data-entry-card">
+                <h2>Manual Data Entry</h2>
+                <form id="fraudForm" class="form-grid">
+                    <div>
+                        <label for="assured_age">Assured Age</label>
+                        <input type="number" id="assured_age" name="assured_age" placeholder="Enter age" required>
+                    </div>
+                    
+                    <div>
+                        <label for="nominee_relation">Nominee Relation</label>
+                        <select id="nominee_relation" name="nominee_relation" required>
+                            <option value="">Select nominee relation</option>
+                            <option>Brother</option>
+                            <option>Daughter</option>
+                            <option>Father</option>
+                            <option>Mother</option>
+                            <option>Spouse</option>
+                            <option>Son</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="occupation">Occupation</label>
+                        <select id="occupation" name="occupation" required>
+                            <option value="">Select occupation</option>
+                            <option>Business</option>
+                            <option>Service</option>
+                            <option>Student</option>
+                            <option>Retired</option>
+                            <option>Housewife</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="policy_sum_assured">Policy Sum Assured</label>
+                        <input type="number" id="policy_sum_assured" name="policy_sum_assured" placeholder="Enter assured sum" required>
+                    </div>
+                    
+                    <div>
+                        <label for="premium">Premium</label>
+                        <input type="number" id="premium" name="premium" step="0.01" placeholder="Enter premium amount" required>
+                    </div>
+                    
+                    <div>
+                        <label for="premium_payment_mode">Premium Payment Mode</label>
+                        <select id="premium_payment_mode" name="premium_payment_mode" required>
+                            <option value="">Select payment mode</option>
+                            <option>Quarterly</option>
+                            <option>Yearly</option>
+                            <option>Half-yearly</option>
+                            <option>Monthly</option>
+                            <option>Single</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="annual_income">Annual Income</label>
+                        <input type="number" id="annual_income" name="annual_income" placeholder="Enter annual income" required>
+                    </div>
+                    
+                    <div>
+                        <label for="holder_marital_status">Marital Status</label>
+                        <select id="holder_marital_status" name="holder_marital_status" required>
+                            <option value="">Select marital status</option>
+                            <option>Single</option>
+                            <option>Married</option>
+                            <option>Widowed</option>
+                            <option>Divorced</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="indiv_requirement_flag">Individual Requirement Flag</label>
+                        <select id="indiv_requirement_flag" name="indiv_requirement_flag" required>
+                            <option value="">Select requirement flag</option>
+                            <option>Non Medical</option>
+                            <option>Medical</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="policy_term">Policy Term</label>
+                        <input type="number" id="policy_term" name="policy_term" placeholder="Enter policy term (years)" required>
+                    </div>
+                    
+                    <div>
+                        <label for="policy_payment_term">Policy Payment Term</label>
+                        <input type="number" id="policy_payment_term" name="policy_payment_term" placeholder="Enter payment term (years)" required>
+                    </div>
+                    
+                    <div>
+                        <label for="product_type">Product Type</label>
+                        <select id="product_type" name="product_type" required>
+                            <option value="">Select product type</option>
+                            <option>ULIP</option>
+                            <option>Traditional</option>
+                            <option>Pension</option>
+                            <option>Health</option>
+                            <option>Non Par</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="channel">Channel</label>
+                        <select id="channel" name="channel" required>
+                            <option value="">Select channel</option>
+                            <option>Retail Agency</option>
+                            <option>Bancassurance</option>
+                            <option>Institutional Alliance</option>
+                            <option>Mail and Others</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="bank_code">Bank Code</label>
+                        <input type="number" id="bank_code" name="bank_code" placeholder="Enter bank code" required>
+                    </div>
+                    
+                    <div>
+                        <label for="policy_risk_commencement_date">Policy Risk Commencement Date</label>
+                        <input type="date" id="policy_risk_commencement_date" name="policy_risk_commencement_date" required>
+                    </div>
+                    
+                    <div>
+                        <label for="date_of_death">Date of Death (if applicable)</label>
+                        <input type="date" id="date_of_death" name="date_of_death" placeholder="Enter if applicable">
+                    </div>
+                    
+                    <div>
+                        <label for="intimation_date">Intimation Date</label>
+                        <input type="date" id="intimation_date" name="intimation_date" required>
+                    </div>
+                    
+                    <div>
+                        <label for="status">Status</label>
+                        <select id="status" name="status" required>
+                            <option value="">Select status</option>
+                            <option>Claim</option>
+                            <option>Cancellation</option>
+                            <option>Lapse</option>
+                            <option>Technical Lapse</option>
+                            <option>Inforce</option>
+                            <option>Withdrawal</option>
+                            <option>Rejection</option>
+                            <option>Maturity</option>
+                            <option>Terminated</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="sub_status">Sub-status</label>
+                        <select id="sub_status" name="sub_status" required>
+                            <option value="">Select an option</option>
+                            <option value="0">None</option>
+                            <option value="1">-</option>
+                            <option value="2">Death Claim Paid</option>
+                            <option value="3">Death Claim Repudiated</option>
+                            <option value="4">Declined</option>
+                            <option value="5">Dishonour</option>
+                            <option value="6">Disinvested Paid</option>
+                            <option value="7">Disinvested Unpaid</option>
+                            <option value="8">Free Look Cancellation</option>
+                            <option value="9">Intimated Death Claim</option>
+                            <option value="10">Intimated Death Claim-Annuity</option>
+                            <option value="11">Other Reason</option>
+                            <option value="12">Paid Up</option>
+                            <option value="13">Refunded</option>
+                            <option value="14">Surrendered</option>
+                            <option value="15">Surrendered Reinvested Auto</option>
+                            <option value="16">Unpaid</option>
+                        </select>
+                    </div>
+                    
+                    <div class="full-width">
+                        <button type="submit" class="btn" id="submitBtn">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="resultModal">
+        <div class="result-modal">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <h3>Fraud Detection Result</h3>
+            <div id="modalContent"></div>
+            <button class="modal-btn" id="closeModalBtn">Close</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let fraudForm = document.getElementById("fraudForm");
+            let modalOverlay = document.getElementById("resultModal");
+            let closeModalBtn = document.getElementById("closeModalBtn");
+            let closeModal = document.getElementById("closeModal");
+            let submitBtn = document.getElementById("submitBtn");
+            
+            if (fraudForm) fraudForm.addEventListener("submit", submitFraudForm);
+            
+            // Close modal when close button is clicked
+            if (closeModalBtn) closeModalBtn.addEventListener("click", function() {
+                modalOverlay.classList.remove("active");
+            });
+            
+            if (closeModal) closeModal.addEventListener("click", function() {
+                modalOverlay.classList.remove("active");
+            });
+            
+            // Close modal when clicking outside the modal content
+            window.addEventListener("click", function(event) {
+                if (event.target === modalOverlay) {
+                    modalOverlay.classList.remove("active");
+                }
+            });
+        });
+
+        async function submitFraudForm(event) {
+            event.preventDefault();
+            
+            // Disable submit button to prevent double submission
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Processing...";
+            
+            // Show loading in modal
+            const modalContent = document.getElementById("modalContent");
+            modalContent.innerHTML = `
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p>Processing your request...</p>
+                </div>
+            `;
+            document.getElementById("resultModal").classList.add("active");
+
+            let formData = new FormData(event.target);
+            let jsonData = {};
+
+            formData.forEach((value, key) => {
+                let numericFields = [
+                    "assured_age", "policy_sum_assured", "premium", "annual_income",
+                    "policy_term", "policy_payment_term", "bank_code"
+                ];
+
+                let dateFields = ["policy_risk_commencement_date", "date_of_death", "intimation_date"];
+
+                if (numericFields.includes(key)) {
+                    jsonData[key] = parseFloat(value) || 0;
+                } else if (dateFields.includes(key)) {
+                    jsonData[key] = value ? new Date(value).toISOString().split("T")[0] : null;
+                } else {
+                    jsonData[key] = value.trim();
+                }
+            });
+
+            try {
+                // Direct API call to your backend endpoint
+                const apiUrl = "https://frauddetection-production-fcb7.up.railway.app/model/predict/";
+                
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(jsonData),
+                    // Use mode: 'cors' to explicitly request CORS
+                    mode: 'cors'
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Server responded with status ${response.status}: ${errorText}`);
+                }
+
+                const result = await response.json();
+                console.log("Fraud Category:", result.prediction);
+
+                // Update modal content with results
+                modalContent.innerHTML = `
+                    <p>🔍 <strong>Category:</strong> ${result.prediction}</p>
+                    <p>The prediction was processed successfully.</p>
+                `;
+                
+            } catch (error) {
+                console.error("API Error:", error);
+                
+                // Show error message
+                modalContent.innerHTML = `
+                    <div class="error-message">
+                        <p><strong>❌ Error processing request</strong></p>
+                        <p>${error.message}</p>
+                        <p>Please check your network connection and try again.</p>
+                    </div>
+                `;
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit";
+            }
+        }
+    </script>
+</body>
+</html>
