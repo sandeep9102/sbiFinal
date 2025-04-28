@@ -583,3 +583,25 @@ section {
     margin-bottom: 0;
   }
 }
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 20px;
+  flex-wrap: wrap; /* In case on small screens */
+}
+
+.hero-btn {
+  padding: 12px 24px;
+  background: #4f46e5; /* Indigo */
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+  text-align: center;
+}
+
+.hero-btn:hover {
+  background: #4338ca; /* Darker indigo */
+}
