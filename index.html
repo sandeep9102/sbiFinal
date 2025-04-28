@@ -388,16 +388,16 @@
     </div>
     <div class="stats-panel">
       <div class="stat-item" data-aos="zoom-in" data-aos-delay="100">
-        <h3>99.7%</h3>
-        <p>Detection Rate</p>
+        <h3>96%</h3>
+        <p>Accuracy Rate</p>
       </div>
       <div class="stat-item" data-aos="zoom-in" data-aos-delay="200">
-        <h3>$1.2B</h3>
-        <p>Saved for Clients</p>
+        <h3>0.99</h3>
+        <p>F1 score for Claims Fraud</p>
       </div>
       <div class="stat-item" data-aos="zoom-in" data-aos-delay="300">
-        <h3>0.002%</h3>
-        <p>False Positive Rate</p>
+        <h3>0.028%</h3>
+        <p> Avg. False Positive Rate</p>
       </div>
       <div class="stat-item" data-aos="zoom-in" data-aos-delay="400">
         <h3>24/7</h3>
@@ -772,6 +772,943 @@
     });
   });
 </script>
+<!-- Add this before the closing body tag -->
 
+<!-- Chatbot Icon and Interface -->
+<div class="chatbot-container">
+  <!-- Chatbot Icon -->
+  <div class="chatbot-icon" id="chatbotIcon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+      <line x1="3" y1="9" x2="21" y2="9"></line>
+      <line x1="9" y1="21" x2="9" y2="9"></line>
+      <line x1="15" y1="21" x2="15" y2="9"></line>
+    </svg>
+    <span class="notification-badge" id="notificationBadge">1</span>
+  </div>
+  
+  <!-- Chatbot Interface -->
+  <div class="chatbot-interface" id="chatbotInterface">
+    <div class="chatbot-header">
+      <div class="chatbot-title">
+        <img src="sbi_logo.png" alt="SBI Logo" class="chatbot-logo">
+        <h3>SBI Fraud Detection Assistant</h3>
+      </div>
+      <div class="chatbot-controls">
+        <button class="fullscreen-button" id="fullscreenButton">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+        </button>
+        <button class="close-chatbot" id="closeChatbot">×</button>
+      </div>
+    </div>
+    
+    <div class="chatbot-messages" id="chatbotMessages">
+      <div class="message bot-message">
+        <div class="message-content">
+          <p>Welcome to SBI Fraud Detection Assistant! How can I help you today?</p>
+        </div>
+        <div class="message-time">Just now</div>
+      </div>
+    </div>
+    
+    <div class="chatbot-input">
+      <input type="text" id="userInput" placeholder="Type your message...">
+      <button id="sendMessage">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Loading indicator for waiting for responses -->
+    <div class="chatbot-loading" id="chatbotLoading">
+      <div class="dot-typing"></div>
+    </div>
+    
+    <!-- Resize handles -->
+    <div class="resize-handle resize-handle-se"></div>
+    <div class="resize-handle resize-handle-sw"></div>
+    <div class="resize-handle resize-handle-ne"></div>
+    <div class="resize-handle resize-handle-nw"></div>
+  </div>
+</div>
+
+<!-- Add this style to your CSS -->
+<style>
+  /* Chatbot Styles */
+  .chatbot-container {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  
+  /* Chatbot Icon */
+  .chatbot-icon {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    background-color: #2196F3;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    color: white;
+    transition: all 0.3s;
+  }
+  
+  .chatbot-icon:hover {
+    background-color: #0d8bf2;
+    transform: scale(1.05);
+  }
+  
+  .notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ff4757;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Chatbot Interface */
+  .chatbot-interface {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 350px;
+    height: 450px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    resize: both;
+    min-width: 300px;
+    min-height: 400px;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+  
+  /* Fullscreen mode */
+  .chatbot-interface.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    z-index: 1001;
+  }
+  
+  /* Chatbot Header */
+  .chatbot-header {
+    padding: 15px;
+    background-color: #2196F3;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .chatbot-title {
+    display: flex;
+    align-items: center;
+  }
+  
+  .chatbot-logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    border-radius: 4px;
+    object-fit: contain;
+    background-color: white;
+    padding: 2px;
+  }
+  
+  .chatbot-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .chatbot-controls {
+    display: flex;
+    align-items: center;
+  }
+  
+  .fullscreen-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-right: 10px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .fullscreen-button:hover {
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 4px;
+  }
+  
+  .close-chatbot {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .close-chatbot:hover {
+    opacity: 0.8;
+  }
+  
+  /* Chatbot Messages Area */
+  .chatbot-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #f5f7ff;
+  }
+  
+  /* Message Styles */
+  .message {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .message-content {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    position: relative;
+  }
+  
+  .message-time {
+    font-size: 11px;
+    color: #999;
+    margin-top: 4px;
+  }
+  
+  /* Bot Message */
+  .bot-message {
+    align-items: flex-start;
+  }
+  
+  .bot-message .message-content {
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  
+  .bot-message .message-time {
+    margin-left: 10px;
+  }
+  
+  /* User Message */
+  .user-message {
+    align-items: flex-end;
+  }
+  
+  .user-message .message-content {
+    background-color: #2196F3;
+    color: white;
+  }
+  
+  .user-message .message-time {
+    margin-right: 10px;
+    text-align: right;
+  }
+  
+  /* Chatbot Input Area */
+  .chatbot-input {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #e0e0e0;
+    background-color: white;
+  }
+  
+  .chatbot-input input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .chatbot-input input:focus {
+    border-color: #2196F3;
+  }
+  
+  .chatbot-input button {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+  }
+  
+  .chatbot-input button:hover {
+    background-color: #0d8bf2;
+  }
+  
+  /* Loading Animation */
+  .chatbot-loading {
+    position: absolute;
+    bottom: 70px;
+    left: 15px;
+    display: none;
+  }
+  
+  .dot-typing {
+    position: relative;
+    left: -9999px;
+    width: 8px;
+    height: 8px;
+    border-radius: 5px;
+    background-color: #2196F3;
+    color: #2196F3;
+    box-shadow: 9984px 0 0 0 #2196F3, 9999px 0 0 0 #2196F3, 10014px 0 0 0 #2196F3;
+    animation: dot-typing 1.5s infinite linear;
+  }
+  
+  @keyframes dot-typing {
+    0% {
+      box-shadow: 9984px 0 0 0 #2196F3, 9999px 0 0 0 #2196F3, 10014px 0 0 0 #2196F3;
+    }
+    16.667% {
+      box-shadow: 9984px -10px 0 0 #2196F3, 9999px 0 0 0 #2196F3, 10014px 0 0 0 #2196F3;
+    }
+    33.333% {
+      box-shadow: 9984px 0 0 0 #2196F3, 9999px 0 0 0 #2196F3, 10014px 0 0 0 #2196F3;
+    }
+    50% {
+      box-shadow: 9984px 0 0 0 #2196F3, 9999px -10px 0 0 #2196F3, 10014px 0 0 0 #2196F3;
+    }
+    66.667% {
+      box-shadow: 9984px 0 0 0 #2196F3, 9999px 0 0 0 #2196F3, 10014px 0 0 0 #2196F3;
+    }
+    83.333% {
+      box-shadow: 9984px 0 0 0 #2196F3, 9999px 0 0 0 #2196F3, 10014px -10px 0 0 #2196F3;
+    }
+    100% {
+      box-shadow: 9984px 0 0 0 #2196F3, 9999px 0 0 0 #2196F3, 10014px 0 0 0 #2196F3;
+    }
+  }
+  
+  /* Resize handles */
+  .resize-handle {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: transparent;
+    z-index: 2;
+  }
+  
+  .resize-handle:hover {
+    cursor: nwse-resize;
+  }
+  
+  .resize-handle-se {
+    bottom: 0;
+    right: 0;
+    cursor: se-resize;
+  }
+  
+  .resize-handle-sw {
+    bottom: 0;
+    left: 0;
+    cursor: sw-resize;
+  }
+  
+  .resize-handle-ne {
+    top: 0;
+    right: 0;
+    cursor: ne-resize;
+  }
+  
+  .resize-handle-nw {
+    top: 0;
+    left: 0;
+    cursor: nw-resize;
+  }
+  
+  /* Show resize arrows on hover */
+  .chatbot-interface:hover .resize-handle::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 1px;
+  }
+  
+  .chatbot-interface:hover .resize-handle-se::after {
+    right: 4px;
+    bottom: 4px;
+    border-color: transparent #2196F3 #2196F3 transparent;
+  }
+  
+  .chatbot-interface:hover .resize-handle-sw::after {
+    left: 4px;
+    bottom: 4px;
+    border-color: transparent transparent #2196F3 #2196F3;
+  }
+  
+  .chatbot-interface:hover .resize-handle-ne::after {
+    right: 4px;
+    top: 4px;
+    border-color: #2196F3 #2196F3 transparent transparent;
+  }
+  
+  .chatbot-interface:hover .resize-handle-nw::after {
+    left: 4px;
+    top: 4px;
+    border-color: #2196F3 transparent transparent #2196F3;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 480px) {
+    .chatbot-interface {
+      width: calc(100vw - 40px);
+      right: 0;
+      bottom: 80px;
+    }
+    
+    .chatbot-interface.fullscreen {
+      width: 100vw;
+      height: 100vh;
+    }
+  }
+</style>
+
+<!-- Add this JavaScript before the closing body tag -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get chatbot elements
+    const chatbotIcon = document.getElementById('chatbotIcon');
+    const chatbotInterface = document.getElementById('chatbotInterface');
+    const closeChatbot = document.getElementById('closeChatbot');
+    const userInput = document.getElementById('userInput');
+    const sendMessage = document.getElementById('sendMessage');
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    const notificationBadge = document.getElementById('notificationBadge');
+    const chatbotLoading = document.getElementById('chatbotLoading');
+    const fullscreenButton = document.getElementById('fullscreenButton');
+    
+    // Backend API URLs
+    const API_BASE_URL = 'http://127.0.0.1:5000';  // Adjust this to your backend URL if deployed
+    
+    // Store session ID
+    let sessionId = '';
+    
+    // Initialize chat session when chatbot is first opened
+    async function initChatSession() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/chat/start`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to initialize chat session');
+        }
+        
+        const data = await response.json();
+        sessionId = data.session_id;
+        console.log('Chat session initialized with ID:', sessionId);
+      } catch (error) {
+        console.error('Error initializing chat session:', error);
+        addMessage('Sorry, I had trouble connecting to the server. Please try again later.', 'bot');
+      }
+    }
+    
+    // Load chat history if session exists
+    async function loadChatHistory() {
+      if (!sessionId) return;
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/chat/history/${sessionId}`);
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            // Session expired or not found, create new session
+            await initChatSession();
+            return;
+          }
+          throw new Error('Failed to load chat history');
+        }
+        
+        const data = await response.json();
+        
+        // Clear existing messages except the welcome message
+        while (chatbotMessages.children.length > 1) {
+          chatbotMessages.removeChild(chatbotMessages.lastChild);
+        }
+        
+        // Add messages from history
+        data.chat_history.forEach(item => {
+          addMessage(item.query, 'user');
+          addMessage(item.response, 'bot');
+        });
+      } catch (error) {
+        console.error('Error loading chat history:', error);
+      }
+    }
+    
+    // Toggle chatbot interface
+    chatbotIcon.addEventListener('click', function() {
+      if (chatbotInterface.style.display === 'flex') {
+        chatbotInterface.style.display = 'none';
+      } else {
+        chatbotInterface.style.display = 'flex';
+        // Hide notification badge when chat is opened
+        notificationBadge.style.display = 'none';
+        // Focus on input
+        userInput.focus();
+        
+        // Initialize session if it doesn't exist
+        if (!sessionId) {
+          initChatSession();
+        } else {
+          loadChatHistory();
+        }
+      }
+    });
+    
+    // Close chatbot
+    closeChatbot.addEventListener('click', function() {
+      chatbotInterface.style.display = 'none';
+    });
+    
+    // Toggle fullscreen mode
+    fullscreenButton.addEventListener('click', function() {
+      chatbotInterface.classList.toggle('fullscreen');
+      
+      // Change fullscreen button icon based on state
+      if (chatbotInterface.classList.contains('fullscreen')) {
+        fullscreenButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+          </svg>
+        `;
+      } else {
+        fullscreenButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+        `;
+      }
+      
+      // Scroll to bottom of messages
+      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    });
+    
+    // Send message function
+    async function sendUserMessage() {
+      const message = userInput.value.trim();
+      if (message === '') return;
+      
+      // Add user message to chat
+      addMessage(message, 'user');
+      
+      // Clear input
+      userInput.value = '';
+      
+      // Show loading indicator
+      chatbotLoading.style.display = 'block';
+      
+      try {
+        // Initialize session if it doesn't exist
+        if (!sessionId) {
+          await initChatSession();
+        }
+        
+        // Send message to backend
+        const response = await fetch(`${API_BASE_URL}/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query: message,
+            session_id: sessionId
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to get response from server');
+        }
+        
+        const data = await response.json();
+        
+        // Hide loading indicator
+        chatbotLoading.style.display = 'none';
+        
+        // Add bot response to chat
+        addMessage(data.response, 'bot');
+      } catch (error) {
+        console.error('Error sending message:', error);
+        
+        // Hide loading indicator
+        chatbotLoading.style.display = 'none';
+        
+        // Add error message
+        addMessage('Sorry, I experienced a technical issue. Please try again later.', 'bot');
+      }
+    }
+    
+    // Send message on button click
+    sendMessage.addEventListener('click', sendUserMessage);
+    
+    // Send message on Enter key
+    userInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendUserMessage();
+      }
+    });
+    
+    function addMessage(message, sender) {
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message');
+    
+      const contentDiv = document.createElement('div');
+      contentDiv.classList.add('message-content');
+    
+      const paragraph = document.createElement('p');
+    
+      // Parse basic markdown manually:
+      let formattedMessage = message
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')    // Bold **text**
+        .replace(/_(.*?)_/g, '<em>$1</em>')                  // Italic _text_
+        .replace(/`(.*?)`/g, '<code>$1</code>')              // Inline code `text`
+        .replace(/\n/g, '<br>')                              // New lines
+        .replace(/^\s*\*\s(.*)$/gm, '<li>$1</li>')            // Bulleted list items
+        .replace(/^\s*\d+\.\s(.*)$/gm, '<li>$1</li>');        // Numbered list items
+    
+      // Wrap <li> elements inside <ul> or <ol> appropriately
+      if (formattedMessage.includes('<li>')) {
+        // Check if original message had numbered list or bullet list
+        if (/^\s*\d+\.\s/m.test(message)) {
+          formattedMessage = `<ol>${formattedMessage}</ol>`;  // Ordered list for numbers
+        } else {
+          formattedMessage = `<ul>${formattedMessage}</ul>`;  // Unordered list for bullets
+        }
+      }
+    
+      paragraph.innerHTML = formattedMessage;
+    
+      contentDiv.appendChild(paragraph);
+    
+      const timeDiv = document.createElement('div');
+      timeDiv.classList.add('message-time');
+      timeDiv.textContent = getCurrentTime();
+    
+      if (sender === 'user') {
+        messageElement.classList.add('user-message');
+      } else {
+        messageElement.classList.add('bot-message');
+      }
+    
+      messageElement.appendChild(contentDiv);
+      messageElement.appendChild(timeDiv);
+    
+      chatbotMessages.appendChild(messageElement);
+    
+      // Scroll to the bottom
+      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+    
+    
+    // Get current time in HH:MM format
+    function getCurrentTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }
+    
+    // Setup manual resize functionality
+    function setupResizeHandlers() {
+      const resizeHandles = document.querySelectorAll('.resize-handle');
+      
+      resizeHandles.forEach(handle => {
+        handle.addEventListener('mousedown', initResize);
+      });
+      
+      function initResize(e) {
+        e.preventDefault();
+        
+        // Prevent resizing in fullscreen mode
+        if (chatbotInterface.classList.contains('fullscreen')) {
+          return;
+        }
+        
+        const resizeType = e.target.className.split(' ')[1]; // Get the resize handle class (e.g., resize-handle-se)
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const startWidth = parseInt(document.defaultView.getComputedStyle(chatbotInterface).width, 10);
+        const startHeight = parseInt(document.defaultView.getComputedStyle(chatbotInterface).height, 10);
+        const startTop = chatbotInterface.getBoundingClientRect().top;
+        const startLeft = chatbotInterface.getBoundingClientRect().left;
+        
+        document.documentElement.addEventListener('mousemove', doResize);
+        document.documentElement.addEventListener('mouseup', stopResize);
+        
+        function doResize(e) {
+          let newWidth, newHeight;
+          
+          // Calculate new dimensions based on resize handle type
+          switch(resizeType) {
+            case 'resize-handle-se':
+              newWidth = startWidth + (e.clientX - startX);
+              newHeight = startHeight + (e.clientY - startY);
+              break;
+            case 'resize-handle-sw':
+              newWidth = startWidth - (e.clientX - startX);
+              newHeight = startHeight + (e.clientY - startY);
+              chatbotInterface.style.left = (startLeft + (e.clientX - startX)) + 'px';
+              break;
+            case 'resize-handle-ne':
+              newWidth = startWidth + (e.clientX - startX);
+              newHeight = startHeight - (e.clientY - startY);
+              chatbotInterface.style.top = (startTop + (e.clientY - startY)) + 'px';
+              break;
+            case 'resize-handle-nw':
+              newWidth = startWidth - (e.clientX - startX);
+              newHeight = startHeight - (e.clientY - startY);
+              chatbotInterface.style.top = (startTop + (e.clientY - startY)) + 'px';
+              chatbotInterface.style.left = (startLeft + (e.clientX - startX)) + 'px';
+              break;
+          }
+          
+          // Apply min/max constraints
+          const minWidth = 300;
+          const minHeight = 400;
+          const maxWidth = window.innerWidth * 0.9;
+          const maxHeight = window.innerHeight * 0.9;
+          
+          newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+          newHeight = Math.max(minHeight, Math.min(newHeight, maxHeight));
+          
+          // Apply new dimensions
+          chatbotInterface.style.width = newWidth + 'px';
+          chatbotInterface.style.height = newHeight + 'px';
+          
+          // Scroll to bottom of messages
+          chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+        
+        function stopResize() {
+          document.documentElement.removeEventListener('mousemove', doResize);
+          document.documentElement.removeEventListener('mouseup', stopResize);
+        }
+      }
+    }
+    
+    // Initialize resize handlers
+    setupResizeHandlers();
+    
+    // Setup fallback logic in case backend is unavailable
+    function setupFallbackMode() {
+      // Define simple fallback responses
+      const fallbackResponses = {
+        'hello': 'Hello! How can I help you with SBI Fraud Detection today?',
+        'hi': 'Hi there! How can I assist you with fraud detection?',
+        'help': 'I can help you understand SBI\'s fraud detection services, explain how to report suspicious activities, or provide general information about our security features.',
+        'fraud': 'SBI\'s fraud detection system uses advanced AI to identify suspicious patterns and activities. We monitor transactions 24/7 to keep your accounts safe.',
+        'contact': 'You can reach our support team at support@sbifraud.com or call our hotline at 1-800-SBI-HELP.',
+        'report': 'To report suspicious activity, please use the \'Manual Data Entry\' feature in the Detection menu or contact our 24/7 fraud reporting line.',
+        'thank': 'You\'re welcome! Is there anything else I can help you with?',
+        'bye': 'Thank you for chatting with SBI Fraud Detection Assistant. Have a great day!'
+      };
+      
+      // Fallback send message function when backend is unavailable
+      async function fallbackSendMessage() {
+        const message = userInput.value.trim();
+        if (message === '') return;
+        
+        // Add user message to chat
+        addMessage(message, 'user');
+        
+        // Clear input
+        userInput.value = '';
+        
+        // Show loading indicator
+        chatbotLoading.style.display = 'block';
+        
+        // Simulate processing delay
+        setTimeout(() => {
+          // Hide loading indicator
+          chatbotLoading.style.display = 'none';
+          
+          // Generate fallback response
+          let botResponse = 'I\'m currently operating in offline mode. Please try again later when our servers are available.';
+          
+          // Check for keyword matches
+          const messageLower = message.toLowerCase();
+          for (const [keyword, response] of Object.entries(fallbackResponses)) {
+            if (messageLower.includes(keyword)) {
+              botResponse = response;
+              break;
+            }
+          }
+          
+          // Add bot response to chat
+          addMessage(botResponse, 'bot');
+        }, 1000);
+      }
+      
+      // Test backend connection
+      fetch(`${API_BASE_URL}/chat/start`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Backend unavailable');
+        }
+        // Backend is available, use normal functionality
+        return response.json();
+      })
+      .then(data => {
+        sessionId = data.session_id;
+        console.log('Chat session initialized with ID:', sessionId);
+      })
+      .catch(error => {
+        console.warn('Backend unavailable, switching to fallback mode:', error);
+        // Override the sendUserMessage function with fallback version
+        window.sendUserMessage = fallbackSendMessage;
+        
+       // Replace event listeners
+       sendMessage.removeEventListener('click', sendUserMessage);
+       sendMessage.addEventListener('click', fallbackSendMessage);
+       
+       userInput.removeEventListener('keypress', function(e) {
+         if (e.key === 'Enter') sendUserMessage();
+       });
+       
+       userInput.addEventListener('keypress', function(e) {
+         if (e.key === 'Enter') fallbackSendMessage();
+       });
+       
+       // Add a message to inform user
+       setTimeout(() => {
+         addMessage('I\'m currently in offline mode. Some features may be limited.', 'bot');
+       }, 1000);
+     });
+   }
+   
+   // Check for backend availability when page loads
+   setupFallbackMode();
+   
+   // Make chatbot draggable when not in fullscreen mode
+   function makeDraggable() {
+     let isDragging = false;
+     let offsetX, offsetY;
+     
+     // Only allow dragging by the header
+     const chatbotHeader = chatbotInterface.querySelector('.chatbot-header');
+     
+     chatbotHeader.addEventListener('mousedown', startDrag);
+     
+     function startDrag(e) {
+       // Don't drag in fullscreen mode
+       if (chatbotInterface.classList.contains('fullscreen')) {
+         return;
+       }
+       
+       // Ignore if clicking on buttons
+       if (e.target.closest('button')) {
+         return;
+       }
+       
+       e.preventDefault();
+       
+       // Get the initial mouse position and chatbot position
+       isDragging = true;
+       offsetX = e.clientX - chatbotInterface.getBoundingClientRect().left;
+       offsetY = e.clientY - chatbotInterface.getBoundingClientRect().top;
+       
+       document.addEventListener('mousemove', doDrag);
+       document.addEventListener('mouseup', stopDrag);
+       
+       // Add a dragging class for visual feedback
+       chatbotInterface.classList.add('dragging');
+     }
+     
+     function doDrag(e) {
+       if (!isDragging) return;
+       
+       // Calculate new position
+       const x = e.clientX - offsetX;
+       const y = e.clientY - offsetY;
+       
+       // Apply constraints to keep within window
+       const maxX = window.innerWidth - chatbotInterface.offsetWidth;
+       const maxY = window.innerHeight - chatbotInterface.offsetHeight;
+       
+       const boundedX = Math.max(0, Math.min(x, maxX));
+       const boundedY = Math.max(0, Math.min(y, maxY));
+       
+       // Update position
+       chatbotInterface.style.left = boundedX + 'px';
+       chatbotInterface.style.top = boundedY + 'px';
+       chatbotInterface.style.right = 'auto';
+       chatbotInterface.style.bottom = 'auto';
+     }
+     
+     function stopDrag() {
+       isDragging = false;
+       document.removeEventListener('mousemove', doDrag);
+       document.removeEventListener('mouseup', stopDrag);
+       chatbotInterface.classList.remove('dragging');
+     }
+   }
+   
+   // Initialize draggable functionality
+   makeDraggable();
+ });
+</script>
 </body>
 </html>
