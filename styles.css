@@ -525,3 +525,93 @@ section {
     align-items: center;
   }
 }
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 5px;
+  flex-wrap: wrap; /* In case on small screens */
+}
+
+.hero-btn {
+  padding: 12px 24px;
+  background: #4f46e5; /* Indigo */
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+  text-align: center;
+}
+
+.hero-btn:hover {
+  background: #4338ca; /* Darker indigo */
+}
+
+
+.extra-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  margin-top: 250px;
+  flex-wrap: wrap;
+}
+
+.extra-btn {
+  padding: 12px 24px;
+  background: #ffffff;
+  color: #4f46e5;
+  border: 2px solid #4f46e5;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.extra-btn:hover {
+  background: #4f46e5;
+  color: #ffffff;
+}
+
+
+.feature-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 150px;
+}
+
+.feature-card {
+  background-color: #f9fbff;
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  flex: 1 1 250px;
+  max-width: 300px;
+  text-decoration: none;
+  color: #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card i {
+  font-size: 36px;
+  color: #4f46e5;
+  margin-bottom: 15px;
+}
+
+.feature-card h3 {
+  margin: 10px 0;
+  color: #2563eb;
+}
+
+.feature-card p {
+  font-size: 14px;
+  color: #555;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+}
