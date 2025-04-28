@@ -810,3 +810,495 @@
                 <div class="faq-item">
                     <div class="faq-question">Q: What security measures are in place to protect the data?</div>
                     <div class="faq-answer">A: The system employs bank-grade security including 256-bit encryption, multi-factor authentication, role-based access controls, comprehensive audit logs, and secure data centers compliant with ISO 27001 standards.</div>
+<!-- Add this JavaScript before the closing body tag -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get chatbot elements
+      const chatbotIcon = document.getElementById('chatbotIcon');
+      const chatbotInterface = document.getElementById('chatbotInterface');
+      const closeChatbot = document.getElementById('closeChatbot');
+      const userInput = document.getElementById('userInput');
+      const sendMessage = document.getElementById('sendMessage');
+      const chatbotMessages = document.getElementById('chatbotMessages');
+      const notificationBadge = document.getElementById('notificationBadge');
+      const chatbotLoading = document.getElementById('chatbotLoading');
+      const fullscreenButton = document.getElementById('fullscreenButton');
+      
+      // Backend API URLs
+      const API_BASE_URL = 'http://127.0.0.1:5000';  // Adjust this to your backend URL if deployed
+      
+      // Store session ID
+      let sessionId = '';
+      
+      // Initialize chat session when chatbot is first opened
+      async function initChatSession() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/chat/start`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to initialize chat session');
+          }
+          
+          const data = await response.json();
+          sessionId = data.session_id;
+          console.log('Chat session initialized with ID:', sessionId);
+        } catch (error) {
+          console.error('Error initializing chat session:', error);
+          addMessage('Sorry, I had trouble connecting to the server. Please try again later.', 'bot');
+        }
+      }
+      
+      // Load chat history if session exists
+      async function loadChatHistory() {
+        if (!sessionId) return;
+        
+        try {
+          const response = await fetch(`${API_BASE_URL}/chat/history/${sessionId}`);
+          
+          if (!response.ok) {
+            if (response.status === 404) {
+              // Session expired or not found, create new session
+              await initChatSession();
+              return;
+            }
+            throw new Error('Failed to load chat history');
+          }
+          
+          const data = await response.json();
+          
+          // Clear existing messages except the welcome message
+          while (chatbotMessages.children.length > 1) {
+            chatbotMessages.removeChild(chatbotMessages.lastChild);
+          }
+          
+          // Add messages from history
+          data.chat_history.forEach(item => {
+            addMessage(item.query, 'user');
+            addMessage(item.response, 'bot');
+          });
+        } catch (error) {
+          console.error('Error loading chat history:', error);
+        }
+      }
+      
+      // Toggle chatbot interface
+      chatbotIcon.addEventListener('click', function() {
+        if (chatbotInterface.style.display === 'flex') {
+          chatbotInterface.style.display = 'none';
+        } else {
+          chatbotInterface.style.display = 'flex';
+          // Hide notification badge when chat is opened
+          notificationBadge.style.display = 'none';
+          // Focus on input
+          userInput.focus();
+          
+          // Initialize session if it doesn't exist
+          if (!sessionId) {
+            initChatSession();
+          } else {
+            loadChatHistory();
+          }
+        }
+      });
+      
+      // Close chatbot
+      closeChatbot.addEventListener('click', function() {
+        chatbotInterface.style.display = 'none';
+      });
+      
+      // Toggle fullscreen mode
+      fullscreenButton.addEventListener('click', function() {
+        chatbotInterface.classList.toggle('fullscreen');
+        
+        // Change fullscreen button icon based on state
+        if (chatbotInterface.classList.contains('fullscreen')) {
+          fullscreenButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+            </svg>
+          `;
+        } else {
+          fullscreenButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+          `;
+        }
+        
+        // Scroll to bottom of messages
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+      });
+      
+      // Send message function
+      async function sendUserMessage() {
+        const message = userInput.value.trim();
+        if (message === '') return;
+        
+        // Add user message to chat
+        addMessage(message, 'user');
+        
+        // Clear input
+        userInput.value = '';
+        
+        // Show loading indicator
+        chatbotLoading.style.display = 'block';
+        
+        try {
+          // Initialize session if it doesn't exist
+          if (!sessionId) {
+            await initChatSession();
+          }
+          
+          // Send message to backend
+          const response = await fetch(`${API_BASE_URL}/chat`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              query: message,
+              session_id: sessionId
+            })
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to get response from server');
+          }
+          
+          const data = await response.json();
+          
+          // Hide loading indicator
+          chatbotLoading.style.display = 'none';
+          
+          // Add bot response to chat
+          addMessage(data.response, 'bot');
+        } catch (error) {
+          console.error('Error sending message:', error);
+          
+          // Hide loading indicator
+          chatbotLoading.style.display = 'none';
+          
+          // Add error message
+          addMessage('Sorry, I experienced a technical issue. Please try again later.', 'bot');
+        }
+      }
+      
+      // Send message on button click
+      sendMessage.addEventListener('click', sendUserMessage);
+      
+      // Send message on Enter key
+      userInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendUserMessage();
+        }
+      });
+      
+      function addMessage(message, sender) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+      
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('message-content');
+      
+        const paragraph = document.createElement('p');
+      
+        // Parse basic markdown manually:
+        let formattedMessage = message
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')    // Bold **text**
+          .replace(/_(.*?)_/g, '<em>$1</em>')                  // Italic _text_
+          .replace(/`(.*?)`/g, '<code>$1</code>')              // Inline code `text`
+          .replace(/\n/g, '<br>')                              // New lines
+          .replace(/^\s*\*\s(.*)$/gm, '<li>$1</li>')            // Bulleted list items
+          .replace(/^\s*\d+\.\s(.*)$/gm, '<li>$1</li>');        // Numbered list items
+      
+        // Wrap <li> elements inside <ul> or <ol> appropriately
+        if (formattedMessage.includes('<li>')) {
+          // Check if original message had numbered list or bullet list
+          if (/^\s*\d+\.\s/m.test(message)) {
+            formattedMessage = `<ol>${formattedMessage}</ol>`;  // Ordered list for numbers
+          } else {
+            formattedMessage = `<ul>${formattedMessage}</ul>`;  // Unordered list for bullets
+          }
+        }
+      
+        paragraph.innerHTML = formattedMessage;
+      
+        contentDiv.appendChild(paragraph);
+      
+        const timeDiv = document.createElement('div');
+        timeDiv.classList.add('message-time');
+        timeDiv.textContent = getCurrentTime();
+      
+        if (sender === 'user') {
+          messageElement.classList.add('user-message');
+        } else {
+          messageElement.classList.add('bot-message');
+        }
+      
+        messageElement.appendChild(contentDiv);
+        messageElement.appendChild(timeDiv);
+      
+        chatbotMessages.appendChild(messageElement);
+      
+        // Scroll to the bottom
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+      }
+      
+      
+      // Get current time in HH:MM format
+      function getCurrentTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+      }
+      
+      // Setup manual resize functionality
+      function setupResizeHandlers() {
+        const resizeHandles = document.querySelectorAll('.resize-handle');
+        
+        resizeHandles.forEach(handle => {
+          handle.addEventListener('mousedown', initResize);
+        });
+        
+        function initResize(e) {
+          e.preventDefault();
+          
+          // Prevent resizing in fullscreen mode
+          if (chatbotInterface.classList.contains('fullscreen')) {
+            return;
+          }
+          
+          const resizeType = e.target.className.split(' ')[1]; // Get the resize handle class (e.g., resize-handle-se)
+          const startX = e.clientX;
+          const startY = e.clientY;
+          const startWidth = parseInt(document.defaultView.getComputedStyle(chatbotInterface).width, 10);
+          const startHeight = parseInt(document.defaultView.getComputedStyle(chatbotInterface).height, 10);
+          const startTop = chatbotInterface.getBoundingClientRect().top;
+          const startLeft = chatbotInterface.getBoundingClientRect().left;
+          
+          document.documentElement.addEventListener('mousemove', doResize);
+          document.documentElement.addEventListener('mouseup', stopResize);
+          
+          function doResize(e) {
+            let newWidth, newHeight;
+            
+            // Calculate new dimensions based on resize handle type
+            switch(resizeType) {
+              case 'resize-handle-se':
+                newWidth = startWidth + (e.clientX - startX);
+                newHeight = startHeight + (e.clientY - startY);
+                break;
+              case 'resize-handle-sw':
+                newWidth = startWidth - (e.clientX - startX);
+                newHeight = startHeight + (e.clientY - startY);
+                chatbotInterface.style.left = (startLeft + (e.clientX - startX)) + 'px';
+                break;
+              case 'resize-handle-ne':
+                newWidth = startWidth + (e.clientX - startX);
+                newHeight = startHeight - (e.clientY - startY);
+                chatbotInterface.style.top = (startTop + (e.clientY - startY)) + 'px';
+                break;
+              case 'resize-handle-nw':
+                newWidth = startWidth - (e.clientX - startX);
+                newHeight = startHeight - (e.clientY - startY);
+                chatbotInterface.style.top = (startTop + (e.clientY - startY)) + 'px';
+                chatbotInterface.style.left = (startLeft + (e.clientX - startX)) + 'px';
+                break;
+            }
+            
+            // Apply min/max constraints
+            const minWidth = 300;
+            const minHeight = 400;
+            const maxWidth = window.innerWidth * 0.9;
+            const maxHeight = window.innerHeight * 0.9;
+            
+            newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+            newHeight = Math.max(minHeight, Math.min(newHeight, maxHeight));
+            
+            // Apply new dimensions
+            chatbotInterface.style.width = newWidth + 'px';
+            chatbotInterface.style.height = newHeight + 'px';
+            
+            // Scroll to bottom of messages
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+          }
+          
+          function stopResize() {
+            document.documentElement.removeEventListener('mousemove', doResize);
+            document.documentElement.removeEventListener('mouseup', stopResize);
+          }
+        }
+      }
+      
+      // Initialize resize handlers
+      setupResizeHandlers();
+      
+      // Setup fallback logic in case backend is unavailable
+      function setupFallbackMode() {
+        // Define simple fallback responses
+        const fallbackResponses = {
+          'hello': 'Hello! How can I help you with SBI Fraud Detection today?',
+          'hi': 'Hi there! How can I assist you with fraud detection?',
+          'help': 'I can help you understand SBI\'s fraud detection services, explain how to report suspicious activities, or provide general information about our security features.',
+          'fraud': 'SBI\'s fraud detection system uses advanced AI to identify suspicious patterns and activities. We monitor transactions 24/7 to keep your accounts safe.',
+          'contact': 'You can reach our support team at support@sbifraud.com or call our hotline at 1-800-SBI-HELP.',
+          'report': 'To report suspicious activity, please use the \'Manual Data Entry\' feature in the Detection menu or contact our 24/7 fraud reporting line.',
+          'thank': 'You\'re welcome! Is there anything else I can help you with?',
+          'bye': 'Thank you for chatting with SBI Fraud Detection Assistant. Have a great day!'
+        };
+        
+        // Fallback send message function when backend is unavailable
+        async function fallbackSendMessage() {
+          const message = userInput.value.trim();
+          if (message === '') return;
+          
+          // Add user message to chat
+          addMessage(message, 'user');
+          
+          // Clear input
+          userInput.value = '';
+          
+          // Show loading indicator
+          chatbotLoading.style.display = 'block';
+          
+          // Simulate processing delay
+          setTimeout(() => {
+            // Hide loading indicator
+            chatbotLoading.style.display = 'none';
+            
+            // Generate fallback response
+            let botResponse = 'I\'m currently operating in offline mode. Please try again later when our servers are available.';
+            
+            // Check for keyword matches
+            const messageLower = message.toLowerCase();
+            for (const [keyword, response] of Object.entries(fallbackResponses)) {
+              if (messageLower.includes(keyword)) {
+                botResponse = response;
+                break;
+              }
+            }
+            
+            // Add bot response to chat
+            addMessage(botResponse, 'bot');
+          }, 1000);
+        }
+        
+        // Test backend connection
+        fetch(`${API_BASE_URL}/chat/start`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Backend unavailable');
+          }
+          // Backend is available, use normal functionality
+          return response.json();
+        })
+        .then(data => {
+          sessionId = data.session_id;
+          console.log('Chat session initialized with ID:', sessionId);
+        })
+        .catch(error => {
+          console.warn('Backend unavailable, switching to fallback mode:', error);
+          // Override the sendUserMessage function with fallback version
+          window.sendUserMessage = fallbackSendMessage;
+          
+         // Replace event listeners
+         sendMessage.removeEventListener('click', sendUserMessage);
+         sendMessage.addEventListener('click', fallbackSendMessage);
+         
+         userInput.removeEventListener('keypress', function(e) {
+           if (e.key === 'Enter') sendUserMessage();
+         });
+         
+         userInput.addEventListener('keypress', function(e) {
+           if (e.key === 'Enter') fallbackSendMessage();
+         });
+         
+         // Add a message to inform user
+         setTimeout(() => {
+           addMessage('I\'m currently in offline mode. Some features may be limited.', 'bot');
+         }, 1000);
+       });
+     }
+     
+     // Check for backend availability when page loads
+     setupFallbackMode();
+     
+     // Make chatbot draggable when not in fullscreen mode
+     function makeDraggable() {
+       let isDragging = false;
+       let offsetX, offsetY;
+       
+       // Only allow dragging by the header
+       const chatbotHeader = chatbotInterface.querySelector('.chatbot-header');
+       
+       chatbotHeader.addEventListener('mousedown', startDrag);
+       
+       function startDrag(e) {
+         // Don't drag in fullscreen mode
+         if (chatbotInterface.classList.contains('fullscreen')) {
+           return;
+         }
+         
+         // Ignore if clicking on buttons
+         if (e.target.closest('button')) {
+           return;
+         }
+         
+         e.preventDefault();
+         
+         // Get the initial mouse position and chatbot position
+         isDragging = true;
+         offsetX = e.clientX - chatbotInterface.getBoundingClientRect().left;
+         offsetY = e.clientY - chatbotInterface.getBoundingClientRect().top;
+         
+         document.addEventListener('mousemove', doDrag);
+         document.addEventListener('mouseup', stopDrag);
+         
+         // Add a dragging class for visual feedback
+         chatbotInterface.classList.add('dragging');
+       }
+       
+       function doDrag(e) {
+         if (!isDragging) return;
+         
+         // Calculate new position
+         const x = e.clientX - offsetX;
+         const y = e.clientY - offsetY;
+         
+         // Apply constraints to keep within window
+         const maxX = window.innerWidth - chatbotInterface.offsetWidth;
+         const maxY = window.innerHeight - chatbotInterface.offsetHeight;
+         
+         const boundedX = Math.max(0, Math.min(x, maxX));
+         const boundedY = Math.max(0, Math.min(y, maxY));
+         
+         // Update position
+         chatbotInterface.style.left = boundedX + 'px';
+         chatbotInterface.style.top = boundedY + 'px';
+         chatbotInterface.style.right = 'auto';
+         chatbotInterface.style.bottom = 'auto';
+       }
+       
+       function stopDrag() {
+         isDragging = false;
+         document.removeEventListener('mousemove', doDrag);
+         document.removeEventListener('mouseup', stopDrag);
+         chatbotInterface.classList.remove('dragging');
+       }
+     }
+     
+     // Initialize draggable functionality
+     makeDraggable();
+   });
+  </script>  
