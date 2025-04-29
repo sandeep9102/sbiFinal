@@ -18,3 +18,73 @@
  * Running on http://127.0.0.1:5000
  * Running on http://192.168.57.211:5000
 2025-04-29 07:01:31,123 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-29 07:32:35,605 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:32:35] "OPTIONS /chat/start HTTP/1.1" 200 -
+2025-04-29 07:32:35,621 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:32:35] "POST /chat/start HTTP/1.1" 200 -
+2025-04-29 07:32:48,581 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:32:48] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 07:32:57,932 - sbi_assistant - ERROR - FAISS index is not initialized.
+2025-04-29 07:33:00,238 - sbi_assistant - ERROR - Error generating response: string indices must be integers, not 'str'
+2025-04-29 07:33:00,247 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:33:00] "POST /chat HTTP/1.1" 200 -
+2025-04-29 07:33:39,729 - sbi_assistant - WARNING - No files found in PDF directory: ./sbi_documents
+2025-04-29 07:33:39,730 - sbi_assistant - WARNING - No documents loaded. FAISS index initialization skipped.
+2025-04-29 07:33:39,745 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.57.211:5000
+2025-04-29 07:33:39,746 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-29 07:34:32,590 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:34:32] "OPTIONS /chat/start HTTP/1.1" 200 -
+2025-04-29 07:34:32,600 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:34:32] "POST /chat/start HTTP/1.1" 200 -
+2025-04-29 07:34:36,484 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:34:36] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 07:34:39,264 - sbi_assistant - ERROR - FAISS index is not initialized.
+2025-04-29 07:34:41,717 - sbi_assistant - ERROR - Error generating response: string indices must be integers, not 'str'
+2025-04-29 07:34:41,775 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:34:41] "POST /chat HTTP/1.1" 200 -
+2025-04-29 07:38:14,550 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:38:14] "OPTIONS /chat/start HTTP/1.1" 200 -
+2025-04-29 07:38:14,560 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:38:14] "POST /chat/start HTTP/1.1" 200 -
+2025-04-29 07:38:25,889 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:38:25] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 07:38:28,790 - sbi_assistant - ERROR - FAISS index is not initialized.
+2025-04-29 07:38:29,999 - sbi_assistant - ERROR - Error generating response: string indices must be integers, not 'str'
+2025-04-29 07:38:30,008 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:38:30] "POST /chat HTTP/1.1" 200 -
+2025-04-29 07:41:01,039 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:41:01] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 07:41:01,661 - sbi_assistant - ERROR - FAISS index is not initialized.
+2025-04-29 07:41:02,732 - sbi_assistant - ERROR - Error generating response: string indices must be integers, not 'str'
+2025-04-29 07:41:02,740 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 07:41:02] "POST /chat HTTP/1.1" 200 -
+2025-04-29 08:07:51,124 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:07:51] "OPTIONS /chat/start HTTP/1.1" 200 -
+2025-04-29 08:07:51,132 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:07:51] "POST /chat/start HTTP/1.1" 200 -
+2025-04-29 08:07:54,076 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:07:54] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 08:07:58,615 - sbi_assistant - ERROR - FAISS index is not initialized.
+2025-04-29 08:08:00,039 - sbi_assistant - ERROR - Error generating response: string indices must be integers, not 'str'
+2025-04-29 08:08:00,046 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:08:00] "POST /chat HTTP/1.1" 200 -
+2025-04-29 08:10:13,461 - sbi_assistant - WARNING - No files found in PDF directory: ./sbi_documents
+2025-04-29 08:10:13,462 - sbi_assistant - WARNING - No documents loaded. FAISS index initialization skipped.
+2025-04-29 08:10:13,481 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.57.211:5000
+2025-04-29 08:10:13,482 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-29 08:10:29,532 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:10:29] "OPTIONS /chat/start HTTP/1.1" 200 -
+2025-04-29 08:10:29,558 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:10:29] "POST /chat/start HTTP/1.1" 200 -
+2025-04-29 08:10:33,767 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:10:33] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 08:10:34,689 - sbi_assistant - ERROR - FAISS index is not initialized.
+2025-04-29 08:10:35,642 - sbi_assistant - ERROR - Error generating response: string indices must be integers, not 'str'
+2025-04-29 08:10:35,651 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:10:35] "POST /chat HTTP/1.1" 200 -
+2025-04-29 08:14:35,511 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:14:35] "OPTIONS /chat/start HTTP/1.1" 200 -
+2025-04-29 08:14:35,523 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:14:35] "POST /chat/start HTTP/1.1" 200 -
+2025-04-29 08:14:41,671 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:14:41] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 08:14:42,604 - sbi_assistant - ERROR - FAISS index is not initialized.
+2025-04-29 08:14:43,698 - sbi_assistant - ERROR - Error generating response: string indices must be integers, not 'str'
+2025-04-29 08:14:43,705 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:14:43] "POST /chat HTTP/1.1" 200 -
+2025-04-29 08:19:41,839 - sbi_assistant - ERROR - Could not load FAISS: Error in Index *__cdecl faiss::read_index(IOReader *, int) at D:\a\faiss-wheels\faiss-wheels\faiss\faiss\impl\index_read.cpp:532: Error: 'ret == (1)' failed: read error in faiss.index: 0 != 1 (No error)
+2025-04-29 08:19:41,853 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.57.211:5000
+2025-04-29 08:19:41,854 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-29 08:20:09,714 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:20:09] "OPTIONS /chat/start HTTP/1.1" 200 -
+2025-04-29 08:20:09,727 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:20:09] "POST /chat/start HTTP/1.1" 200 -
+2025-04-29 08:20:12,966 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:20:12] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 08:20:14,367 - sbi_assistant - ERROR - FAISS not loaded.
+2025-04-29 08:20:19,314 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:20:19] "POST /chat HTTP/1.1" 200 -
+2025-04-29 08:21:11,735 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:21:11] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 08:21:12,559 - sbi_assistant - ERROR - FAISS not loaded.
+2025-04-29 08:21:17,653 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:21:17] "POST /chat HTTP/1.1" 200 -
+2025-04-29 08:22:47,621 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:22:47] "OPTIONS /chat/start HTTP/1.1" 200 -
+2025-04-29 08:22:47,634 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:22:47] "POST /chat/start HTTP/1.1" 200 -
