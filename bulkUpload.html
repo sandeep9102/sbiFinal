@@ -454,5 +454,419 @@
             }
         }
     </script>
+    <!-- SBI Chatbot Widget - Add this before closing body tag -->
+<div id="sbi-chatbot-widget">
+    <div class="chat-icon" id="chat-icon">
+      <i class="fa fa-comments"></i>
+    </div>
+    
+    <div class="chat-container" id="chat-container">
+      <div class="chat-header">
+        <div class="chat-header-title">
+          <img src="sbi_logo.png" alt="SBI Logo" class="chat-logo">
+          <span>SBI Assistant</span>
+        </div>
+        <div class="chat-header-options">
+          <i class="fa fa-minus minimize-chat"></i>
+          <i class="fa fa-times close-chat"></i>
+        </div>
+      </div>
+      
+      <div class="chat-body" id="chat-body">
+        <div class="chat-message bot-message">
+          <div class="message-content">
+            <p>Hello! I'm your SBI Assistant. How can I help you today?</p>
+          </div>
+          <div class="message-time">Just now</div>
+        </div>
+      </div>
+      
+      <div class="chat-input">
+        <input type="text" id="user-input" placeholder="Type your message here...">
+        <button id="send-button"><i class="fa fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add this before closing body tag - Include Font Awesome if not already in your page -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <style>
+    #sbi-chatbot-widget {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      font-family: Arial, sans-serif;
+    }
+    
+    .chat-icon {
+      background-color: #2d4d9e; /* SBI Blue */
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      font-size: 24px;
+    }
+    
+    .chat-icon:hover {
+      background-color: #3a63c9;
+    }
+    
+    .chat-container {
+      position: absolute;
+      bottom: 80px;
+      right: 0;
+      width: 350px;
+      height: 500px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .chat-header {
+      background-color: #2d4d9e; /* SBI Blue */
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .chat-header-title {
+      display: flex;
+      align-items: center;
+    }
+    
+    .chat-logo {
+      height: 20px;
+      margin-right: 10px;
+    }
+    
+    .chat-header-options i {
+      margin-left: 15px;
+      cursor: pointer;
+    }
+    
+    .chat-header-options i:hover {
+      opacity: 0.8;
+    }
+    
+    .chat-body {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background-color: #f5f5f5;
+    }
+    
+    .chat-message {
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+    }
+    
+    .bot-message {
+      align-items: flex-start;
+    }
+    
+    .user-message {
+      align-items: flex-end;
+      align-self: flex-end;
+    }
+    
+    .message-content {
+      padding: 10px 15px;
+      border-radius: 15px;
+    }
+    
+    .bot-message .message-content {
+      background-color: white;
+      border: 1px solid #e0e0e0;
+      border-bottom-left-radius: 5px;
+    }
+    
+    .user-message .message-content {
+      background-color: #2d4d9e; /* SBI Blue */
+      color: white;
+      border-bottom-right-radius: 5px;
+    }
+    
+    .message-time {
+      font-size: 11px;
+      color: #888;
+      margin-top: 5px;
+      padding: 0 5px;
+    }
+    
+    .typing-indicator {
+      display: flex;
+      padding: 10px 15px;
+      background-color: white;
+      border-radius: 15px;
+      border-bottom-left-radius: 5px;
+      border: 1px solid #e0e0e0;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+    
+    .typing-indicator span {
+      height: 8px;
+      width: 8px;
+      background-color: #888;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+      animation: blink 1.4s infinite both;
+    }
+    
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes blink {
+      0% {
+        opacity: 0.1;
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.1;
+      }
+    }
+    
+    .chat-input {
+      display: flex;
+      padding: 15px;
+      background-color: white;
+      border-top: 1px solid #eee;
+    }
+    
+    .chat-input input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      outline: none;
+    }
+    
+    .chat-input input:focus {
+      border-color: #2d4d9e;
+    }
+    
+    .chat-input button {
+      background-color: #2d4d9e; /* SBI Blue */
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-left: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .chat-input button:hover {
+      background-color: #3a63c9;
+    }
+    
+    .chat-input button:disabled {
+      background-color: #bbb;
+      cursor: not-allowed;
+    }
+  </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const chatIcon = document.getElementById('chat-icon');
+      const chatContainer = document.getElementById('chat-container');
+      const chatBody = document.getElementById('chat-body');
+      const userInput = document.getElementById('user-input');
+      const sendButton = document.getElementById('send-button');
+      const minimizeChat = document.querySelector('.minimize-chat');
+      const closeChat = document.querySelector('.close-chat');
+      
+      let sessionId = null;
+      const apiUrl = 'http://192.168.57.211:5000'; // Update this to your API URL
+  
+      // Toggle chat window
+      chatIcon.addEventListener('click', function() {
+        chatContainer.style.display = chatContainer.style.display === 'flex' ? 'none' : 'flex';
+        
+        if (chatContainer.style.display === 'flex' && !sessionId) {
+          // Start a new chat session when opening chat for first time
+          startChatSession();
+        }
+      });
+      
+      // Minimize chat
+      minimizeChat.addEventListener('click', function() {
+        chatContainer.style.display = 'none';
+      });
+      
+      // Close chat
+      closeChat.addEventListener('click', function() {
+        chatContainer.style.display = 'none';
+        // Optionally reset session if you want to start fresh on reopen
+        // sessionId = null;
+      });
+      
+      // Send message on button click
+      sendButton.addEventListener('click', sendMessage);
+      
+      // Send message on Enter key
+      userInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendMessage();
+        }
+      });
+      
+      // Start chat session
+      function startChatSession() {
+        fetch(`${apiUrl}/chat/start`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          sessionId = data.session_id;
+          console.log('Chat session started:', sessionId);
+        })
+        .catch(error => {
+          console.error('Error starting chat session:', error);
+          addMessage('Sorry, I\'m having trouble connecting to the server. Please try again later.', 'bot');
+        });
+      }
+      
+      // Send message function
+      function sendMessage() {
+        const message = userInput.value.trim();
+        if (!message) return;
+        
+        // Clear input
+        userInput.value = '';
+        
+        // Add user message to chat
+        addMessage(message, 'user');
+        
+        // Show typing indicator
+        showTypingIndicator();
+        
+        // Ensure we have a session
+        if (!sessionId) {
+          startChatSession().then(() => sendMessageToAPI(message));
+        } else {
+          sendMessageToAPI(message);
+        }
+      }
+      
+      // Send message to API
+      function sendMessageToAPI(message) {
+        fetch(`${apiUrl}/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query: message,
+            session_id: sessionId
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Remove typing indicator
+          removeTypingIndicator();
+          
+          // Add bot response
+          if (data.response) {
+            addMessage(data.response, 'bot');
+          } else if (data.error) {
+            addMessage('Sorry, there was an error: ' + data.error, 'bot');
+          }
+          
+          // Update session ID if provided
+          if (data.session_id) {
+            sessionId = data.session_id;
+          }
+        })
+        .catch(error => {
+          console.error('Error sending message:', error);
+          removeTypingIndicator();
+          addMessage('Sorry, I\'m having trouble connecting to the server. Please try again later.', 'bot');
+        });
+      }
+      
+      // Add message to chat
+      function addMessage(message, type) {
+        const messageElement = document.createElement('div');
+        messageElement.className = `chat-message ${type}-message`;
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        // Handle multi-line messages
+        message.split('\n').forEach(line => {
+          if (line.trim() !== '') {
+            const paragraph = document.createElement('p');
+            paragraph.textContent = line;
+            messageContent.appendChild(paragraph);
+          }
+        });
+        
+        const messageTime = document.createElement('div');
+        messageTime.className = 'message-time';
+        messageTime.textContent = 'Just now';
+        
+        messageElement.appendChild(messageContent);
+        messageElement.appendChild(messageTime);
+        
+        chatBody.appendChild(messageElement);
+        
+        // Scroll to bottom
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+      
+      // Show typing indicator
+      function showTypingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.className = 'typing-indicator';
+        indicator.id = 'typing-indicator';
+        
+        for (let i = 0; i < 3; i++) {
+          const dot = document.createElement('span');
+          indicator.appendChild(dot);
+        }
+        
+        chatBody.appendChild(indicator);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+      
+      // Remove typing indicator
+      function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) {
+          indicator.remove();
+        }
+      }
+    });
+  </script>
+  
 </body>
 </html>

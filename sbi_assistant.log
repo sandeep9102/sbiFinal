@@ -88,3 +88,8 @@
 2025-04-29 08:21:17,653 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:21:17] "POST /chat HTTP/1.1" 200 -
 2025-04-29 08:22:47,621 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:22:47] "OPTIONS /chat/start HTTP/1.1" 200 -
 2025-04-29 08:22:47,634 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:22:47] "POST /chat/start HTTP/1.1" 200 -
+2025-04-29 08:24:49,367 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:24:49] "OPTIONS /chat/start HTTP/1.1" 200 -
+2025-04-29 08:24:49,381 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:24:49] "POST /chat/start HTTP/1.1" 200 -
+2025-04-29 08:25:25,951 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:25:25] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 08:25:28,328 - sbi_assistant - ERROR - FAISS not loaded.
+2025-04-29 08:25:36,517 - werkzeug - INFO - 192.168.57.211 - - [29/Apr/2025 08:25:36] "POST /chat HTTP/1.1" 200 -
