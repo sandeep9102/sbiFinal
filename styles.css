@@ -616,3 +616,23 @@ section {
   transform: translateY(-5px);
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
 }
+.quick-replies {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.quick-reply-btn {
+  background: #e3f2fd;
+  border: 1px solid #2196F3;
+  border-radius: 20px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.quick-reply-btn:hover {
+  background: #2196F3;
+  color: white;
+}

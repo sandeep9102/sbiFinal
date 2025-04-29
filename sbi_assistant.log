@@ -1,0 +1,20 @@
+2025-04-29 06:57:53,075 - sbi_assistant - WARNING - No files found in PDF directory: ./sbi_documents
+2025-04-29 06:57:53,076 - sbi_assistant - WARNING - No documents loaded. FAISS index initialization skipped.
+2025-04-29 06:57:53,089 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.57.211:5000
+2025-04-29 06:57:53,090 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-29 06:58:39,257 - werkzeug - INFO - 127.0.0.1 - - [29/Apr/2025 06:58:39] "OPTIONS /chat/start HTTP/1.1" 200 -
+2025-04-29 06:58:39,300 - werkzeug - INFO - 127.0.0.1 - - [29/Apr/2025 06:58:39] "POST /chat/start HTTP/1.1" 200 -
+2025-04-29 06:58:53,505 - werkzeug - INFO - 127.0.0.1 - - [29/Apr/2025 06:58:53] "OPTIONS /chat HTTP/1.1" 200 -
+2025-04-29 06:58:54,435 - sbi_assistant - ERROR - FAISS index is not initialized.
+2025-04-29 06:58:55,562 - sbi_assistant - ERROR - Error generating response: string indices must be integers, not 'str'
+2025-04-29 06:58:55,589 - werkzeug - INFO - 127.0.0.1 - - [29/Apr/2025 06:58:55] "POST /chat HTTP/1.1" 200 -
+2025-04-29 07:01:31,111 - sbi_assistant - WARNING - No files found in PDF directory: ./sbi_documents
+2025-04-29 07:01:31,111 - sbi_assistant - WARNING - No documents loaded. FAISS index initialization skipped.
+2025-04-29 07:01:31,122 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.57.211:5000
+2025-04-29 07:01:31,123 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
